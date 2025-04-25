@@ -1,14 +1,5 @@
 #!/usr/bin/env bash
 
-if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    echo "脚本被直接执行"
-else
-    echo "脚本被 source 调用"
-    echo "调用者信息:"
-    echo "父进程 PID: $PPID"
-    echo "调用命令: $(ps -o cmd= $PPID)"
-fi
-
 declare -A I18N_EN I18N_ZH I18N
 
 # 设置语言，默认从环境变量获取，如果没有则使用英语
