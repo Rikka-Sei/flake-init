@@ -25,7 +25,7 @@ I18N["en"]="I18N_EN"
 I18N["zh_CN"]="I18N_ZH"
 
 # 获取翻译
-function _t() {
+_t() {
     local key=$1
     local lang=${2:-$LANG}  # 允许临时覆盖语言
     
@@ -46,7 +46,3 @@ function _t() {
     
     echo "${dict[$key]}"
 }
-
-# 使用示例
-echo $(_t "welcome")
-echo $(_t "enter_name")
