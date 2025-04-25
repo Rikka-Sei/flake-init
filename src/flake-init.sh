@@ -10,6 +10,7 @@ fi
 SCRIPT_PATH=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
 source "$SCRIPT_PATH/debugger.sh"
 source "$SCRIPT_PATH/i18n.sh"
+source "$SCRIPT_PATH/utils.sh"
 
 # 强制UTF-8环境
 export LANG=en_US.UTF-8
@@ -24,13 +25,9 @@ APP_ENTRY_POINT=""
 # 欢迎消息
 whiptail --msgbox "$(_t "welcome_message")" 10 60
 
-# Check if user cancelled
-if [ $? -ne 0 ]; then exit 1; fi
-
 # --- Get Project Name ---
 PROJECT_NAME=$(whiptail --inputbox "Enter your project name:" 8 60 "my-project" 3>&1 1>&2 2>&3)
-
-if [ $? -ne 0 ]; then exit 1; fi
+cancelThenExit
 
 # Basic validation
 if [ -z "$PROJECT_NAME" ]; then
