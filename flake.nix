@@ -22,16 +22,17 @@
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
             bash
-            coreutils
-            findutils
-            gnugrep
-            gnused
+            newt
           ];
         };
 
         packages.default = pkgs.stdenv.mkDerivation {
           pname = "flake-init";
           version = "0.1.0";
+
+          buildInputs = with pkgs; [
+            newt
+          ];
 
           src = ./src;
 
