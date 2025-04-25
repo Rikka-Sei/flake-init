@@ -10,13 +10,15 @@ LANG_ENV=${LANG%%.*}  # 移除.UTF-8等后缀
 # 英文翻译
 I18N_EN=(
     ["welcome_message"]="Welcome to the NixOS Flake Initializer!\n\nThis script will help you create a flake.nix file for your programming project."
-    ["enter_name"]="Please enter your name:"
+    ["get_project_name"]="Enter your project name:"
+    ["invalid_project_name"]="Project name cannot be empty!"
 )
 
 # 中文翻译
 I18N_ZH=(
     ["welcome_message"]="欢迎使用 NixOS Flake 初始化工具！\n\n本脚本将帮助您为编程项目创建 flake.nix 配置文件。" 
-    ["enter_name"]="请输入您的姓名："
+    ["get_project_name"]="请输入您的项目名："
+    ["invalid_project_name"]="项目名不能为空！"
 )
 
 # 遵守 [language][_TERRITORY] 注册语言

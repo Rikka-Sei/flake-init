@@ -25,13 +25,13 @@ APP_ENTRY_POINT=""
 # 欢迎消息
 whiptail --msgbox "$(_t "welcome_message")" 10 60
 
-# --- Get Project Name ---
-PROJECT_NAME=$(whiptail --inputbox "Enter your project name:" 8 60 "my-project" 3>&1 1>&2 2>&3)
+# 获取项目名
+PROJECT_NAME=$(whiptail --inputbox "$(_t "get_project_name")" 8 60 "my-project" 3>&1 1>&2 2>&3)
 cancelThenExit
 
-# Basic validation
+# 项目名称合法性检查
 if [ -z "$PROJECT_NAME" ]; then
-    whiptail --msgbox "Project name cannot be empty!" 8 40
+    whiptail --msgbox "$(_t "invalid_project_name")" 8 40
     exit 1
 fi
 
