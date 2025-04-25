@@ -8,4 +8,7 @@ cancelThenExit(){
     if [ $return_code -ne 0 ]; then 
         exit $exit_code;
     fi
+
+    # 链式传递，将上一个行为的状态继续传递下去
+    return $return_code
 }
