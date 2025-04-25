@@ -2,7 +2,7 @@
   description = "flake-init: a bash project template with flake-utils";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
@@ -30,28 +30,31 @@
           pname = "flake-init";
           version = "0.1.0";
 
+          src = ./src;
+
           buildInputs = with pkgs; [
             newt
+            makeWrapper # **关键：添加 makeWrapper 到 buildInputs**
           ];
-
-          src = ./src;
 
           installPhase = ''
             mkdir -p $out/bin
-            cp flake-init.sh $out/bin/flake-init
-            chmod +x $out/bin/flake-init
+            cp -r ./ $out/bin
+
+            chmod +x $out/bin/flake-init.sh
+            wrapProgram $out/bin/flake-init.sh --prefix PATH : ${pkgs.newt}/bin
           '';
         };
 
         apps = {
           default = {
             type = "app";
-            program = "${self.packages.${system}.default}/bin/flake-init";
+            program = "${self.packages.${system}.default}/bin/flake-init.sh";
           };
 
           flake-init = {
             type = "app";
-            program = "${self.packages.${system}.default}/bin/flake-init";
+            program = "${self.packages.${system}.default}/bin/flake-init.sh";
           };
         };
       }
