@@ -1,17 +1,5 @@
 #!/usr/bin/env bash
 
-safe_source() {
-    local file="$1"
-    if [[ ! -f "$file" ]]; then
-        echo -e "\033[31m错误：依赖文件不存在 [$file]\033[0m" >&2
-        exit 1
-    fi
-    if ! source "$file"; then
-        echo -e "\033[31m错误：加载依赖失败 [$file]\033[0m" >&2
-        exit 1
-    fi
-}
-
 # 确保 whiptail 已经安装
 if ! command -v whiptail &> /dev/null; then
     echo "Error: whiptail command not found. Please install it (e.g., on NixOS: nix-shell -p newt)."
@@ -29,6 +17,10 @@ SELECTED_LANGUAGE=""
 SELECTED_OUTPUTS=""
 APP_ENTRY_POINT=""
 
+echo "${I18N["zh_CN"]}"
+
+echo "$(_t "welcome_message")"
+exit 0
 # Welcome Message
 whiptail --msgbox "$(_t "welcome_message")" 10 60
 
