@@ -20,7 +20,8 @@ I18N_ZH=(
 )
 
 # 遵守 [language][_TERRITORY] 注册语言
-# https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes
+# language (ISO 639 语言代码)：https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes
+# territory (ISO 3166 国家代码): https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes
 I18N["en_US"]="I18N_EN"
 I18N["zh_CN"]="I18N_ZH"
 
@@ -36,7 +37,7 @@ _t() {
     fi
     
     local dict_name=${I18N[$lang]}
-    eval "declare -n dict=$dict_name"
+    declare -n dict="$dict_name"
     
     # 检查键是否存在
     if [[ -z "${dict[$key]}" ]]; then
