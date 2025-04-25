@@ -11,17 +11,17 @@ SCRIPT_PATH=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
 source "$SCRIPT_PATH/debugger.sh"
 source "$SCRIPT_PATH/i18n.sh"
 
-# Set default values
+# 强制UTF-8环境
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
+# 初始化全局变量
 PROJECT_NAME=""
 SELECTED_LANGUAGE=""
 SELECTED_OUTPUTS=""
 APP_ENTRY_POINT=""
 
-echo "${I18N["zh_CN"]}"
-
-echo "$(_t "welcome_message")"
-exit 0
-# Welcome Message
+# 欢迎消息
 whiptail --msgbox "$(_t "welcome_message")" 10 60
 
 # Check if user cancelled

@@ -4,8 +4,8 @@ declare -A I18N_EN I18N_ZH I18N
 
 # 设置语言，默认从环境变量获取，如果没有则使用英语
 # 处理语言环境变量中的编码后缀(如zh_CN.UTF-8)
-LANG=${LANG:-"en"}
-LANG=${LANG%%.*}  # 移除.UTF-8等后缀
+LANG_ENV=${LANG:-"en"}
+LANG_ENV=${LANG%%.*}  # 移除.UTF-8等后缀
 
 # 英文翻译
 I18N_EN=(
@@ -21,13 +21,13 @@ I18N_ZH=(
 
 # 遵守 [language][_TERRITORY] 注册语言
 # https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes
-I18N["en"]="I18N_EN"
+I18N["en_US"]="I18N_EN"
 I18N["zh_CN"]="I18N_ZH"
 
 # 获取翻译
 _t() {
     local key=$1
-    local lang=${2:-$LANG}  # 允许临时覆盖语言
+    local lang=${2:-$LANG_ENV}  # 允许临时覆盖语言
     
     # 检查语言是否支持
     if [[ -z "${I18N[$lang]}" ]]; then
