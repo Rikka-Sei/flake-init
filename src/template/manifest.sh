@@ -2,4 +2,5 @@
 
 SCRIPT_PATH=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
 
-exit 1
+echo $SCRIPT_PATH
+
