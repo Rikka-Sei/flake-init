@@ -38,8 +38,6 @@
           ];
 
           installPhase = ''
-            ls
-            
             mkdir -p $out/bin
             cp -r ./ $out/bin
 
