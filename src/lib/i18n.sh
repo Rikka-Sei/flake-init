@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-declare -A I18N_EN I18N_ZH I18N
+# 定义全局变量
+declare -g -A I18N_EN I18N_ZH I18N
 
 # 设置语言，默认从环境变量获取，如果没有则使用英语
 # 处理语言环境变量中的编码后缀(如zh_CN.UTF-8)

@@ -7,11 +7,14 @@ if ! command -v whiptail &> /dev/null; then
 fi
 
 # 加载依赖库
-MAIN_script_path=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
-source "${MAIN_script_path}/debugger.sh"
-source "${MAIN_script_path}/i18n.sh"
-source "${MAIN_script_path}/utils.sh"
-source "${MAIN_script_path}/template/manifest.sh"
+_Local=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
+source "${_Local}/lib/loader.sh"
+init_loader
+
+require "lib.debugger"
+require "lib.utils"
+require "lib.i18n"
+require "template.manifest"
 
 # 强制UTF-8环境
 export LANG=en_US.UTF-8
@@ -23,13 +26,13 @@ selected_language=""
 selected_outputs=""
 
 # 欢迎消息
-MAINfn_welcome(){
+main_welcome(){
   whiptail --msgbox "$(_t "welcome_message")" 10 60
 }
 
 
 # 获取项目名
-MAINfn_get_project_name(){
+main_get_project_name(){
   project_name=$(whiptail --inputbox "$(_t "get_project_name")" 8 60 "my-project" 3>&1 1>&2 2>&3)
   cancelThenExit
 
@@ -38,14 +41,14 @@ MAINfn_get_project_name(){
     whiptail --msgbox "$(_t "invalid_project_name")" 8 40
 
     # 重新设置项目名
-    MAINfn_get_project_name
+    main_get_project_name
   fi
 }
 
 # MAIN function
-MAINfn(){
-  MAINfn_welcome
+main(){
+  main_welcome
 
-  MAINfn_get_project_name
+  main_get_project_name
 }
-MAINfn
+main
