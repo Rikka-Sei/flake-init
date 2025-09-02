@@ -12,8 +12,17 @@ init_loader() {
         # 检查模块是否已加载
         [[ -n "${LOADED_MODULES[$module]}" ]] && return 0
         
-        # 构建文件路径
-        local file_path="${LOADER_BASE_DIR}/${module//./\/}.sh"
+        local file_path
+        
+        # 判断导入类型
+        if [[ "$module" == .* ]]; then
+            # 相对导入：从当前工作目录加载
+            local relative_module="${module#.}"
+            file_path="$(pwd)/${relative_module//./\/}.sh"
+        else
+            # 绝对导入：从 main 函数所在文件位置加载
+            file_path="${LOADER_BASE_DIR}/${module//./\/}.sh"
+        fi
         
         if [[ -f "$file_path" ]]; then
             source "$file_path"
