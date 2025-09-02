@@ -12,8 +12,9 @@ source "${_Local}/lib/loader.sh"
 init_loader
 
 require "lib.debugger"
-require "lib.utils"
 require "lib.i18n"
+require "lib.ui"
+require "lib.utils"
 require "template.manifest"
 
 # 强制UTF-8环境
@@ -27,18 +28,18 @@ selected_outputs=""
 
 # 欢迎消息
 main_welcome(){
-  whiptail --msgbox "$(_t "welcome_message")" 10 60
+  ui_msgbox "$(_t "welcome_message")"
 }
 
 
 # 获取项目名
 main_get_project_name(){
-  project_name=$(whiptail --inputbox "$(_t "get_project_name")" 8 60 "my-project" 3>&1 1>&2 2>&3)
+  project_name=$(ui_inputbox "$(_t "project_name_title")" "$(_t "get_project_name")" "my-project")
   cancelThenExit
 
   # 项目名称合法性检查
   if [ -z "$project_name" ]; then
-    whiptail --msgbox "$(_t "invalid_project_name")" 8 40
+    ui_msgbox "$(_t "invalid_project_name")"
 
     # 重新设置项目名
     main_get_project_name

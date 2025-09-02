@@ -8,7 +8,6 @@ require "lib.i18n"
 
 declare -g UI_DEFAULT_WIDTH=60
 declare -g UI_DEFAULT_HEIGHT=10
-declare -g UI_LAST_EXIT_CODE=0
 
 # 初始化 UI 翻译
 _init_ui_i18n() {
@@ -61,11 +60,22 @@ ui_msgbox() {
     local width="${3:-$UI_DEFAULT_WIDTH}"
     local height="${4:-$UI_DEFAULT_HEIGHT}"
     
-    whiptail --title "$title" \
-             --msgbox "$message" \
-             --ok-button "$(_ui_button "ok")" \
-             "$height" "$width"
-    UI_LAST_EXIT_CODE=$?
+    # 如果只有一个参数，则视为message，title为空
+    if [[ $# -eq 1 ]]; then
+        message="$1"
+        title=""
+    fi
+    
+    if [[ -n "$title" ]]; then
+        whiptail --title "$title" \
+                 --msgbox "$message" \
+                 --ok-button "$(_ui_button "ok")" \
+                 "$height" "$width"
+    else
+        whiptail --msgbox "$message" \
+                 --ok-button "$(_ui_button "ok")" \
+                 "$height" "$width"
+    fi
 }
 
 # 确认对话框
@@ -83,7 +93,6 @@ ui_yesno() {
              "$height" "$width"
     
     local result=$?
-    UI_LAST_EXIT_CODE=$result
     
     # 执行回调
     if [[ -n "$callback" && $(type -t "$callback") == "function" ]]; then
@@ -115,7 +124,6 @@ ui_inputbox() {
                      3>&1 1>&2 2>&3)
     
     local exit_code=$?
-    UI_LAST_EXIT_CODE=$exit_code
     
     # 执行回调
     if [[ -n "$callback" && $(type -t "$callback") == "function" ]]; then
@@ -155,7 +163,6 @@ ui_menu() {
                      3>&1 1>&2 2>&3)
     
     local exit_code=$?
-    UI_LAST_EXIT_CODE=$exit_code
     
     # 执行回调
     if [[ -n "$callback" && $(type -t "$callback") == "function" ]]; then
@@ -195,7 +202,6 @@ ui_checklist() {
                      3>&1 1>&2 2>&3)
     
     local exit_code=$?
-    UI_LAST_EXIT_CODE=$exit_code
     
     # 执行回调
     if [[ -n "$callback" && $(type -t "$callback") == "function" ]]; then
@@ -270,14 +276,6 @@ ui_info() {
     local height="${3:-$UI_DEFAULT_HEIGHT}"
     
     ui_msgbox "$(_ui_button "info")" "$message" "$width" "$height"
-}
-
-# 取消操作检查 (兼容现有代码)
-cancelThenExit() {
-    if [[ $UI_LAST_EXIT_CODE -eq 1 ]]; then
-        ui_info "$(_ui_button "operation_cancelled")"
-        exit 0
-    fi
 }
 
 # 设置默认尺寸
