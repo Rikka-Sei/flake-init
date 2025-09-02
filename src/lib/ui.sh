@@ -4,7 +4,7 @@
 # 提供国际化支持、回调机制和进度条功能
 
 # 依赖 i18n 模块
-require "lib.i18n"
+require ".i18n"
 
 declare -g UI_DEFAULT_WIDTH=60
 declare -g UI_DEFAULT_HEIGHT=10

@@ -16,9 +16,10 @@ init_loader() {
         
         # 判断导入类型
         if [[ "$module" == .* ]]; then
-            # 相对导入：从当前工作目录加载
+            # 相对导入：从调用者文件所在目录加载
             local relative_module="${module#.}"
-            file_path="$(pwd)/${relative_module//./\/}.sh"
+            local caller_dir=$(dirname "$(readlink -f "${BASH_SOURCE[1]}")")
+            file_path="${caller_dir}/${relative_module//./\/}.sh"
         else
             # 绝对导入：从 main 函数所在文件位置加载
             file_path="${LOADER_BASE_DIR}/${module//./\/}.sh"
