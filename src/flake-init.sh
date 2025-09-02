@@ -15,8 +15,7 @@ require "lib.debugger"
 require "lib.i18n"
 require "lib.ui"
 require "lib.utils"
-require "template.manifest"
-require "template.template_base"
+require "template.template_manager"
 
 # 强制UTF-8环境
 export LANG=en_US.UTF-8
@@ -70,11 +69,8 @@ main_get_project_name(){
 
 # 模板选择和生成
 main_template_workflow() {
-    # 初始化模板系统
-    template_manifest_init
-    
-    # 使用模板系统选择和生成项目
-    if template_select_and_generate "$project_name" "."; then
+    # 使用新的模板管理器
+    if template_main_workflow "$project_name" "."; then
         ui_info "$(_t "main_template_generated") $project_name/"
     else
         ui_error "模板生成失败"

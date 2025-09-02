@@ -3,17 +3,14 @@
 # Rust 基础项目模板
 # 创建带有 Cargo 的标准 Rust 项目
 
-require "template.template_base"
+require ".i18n"
+require ".ui" 
+require ".utils"
+require ".debugger"
 
-# 注册 Rust 基础模板
-_template_rust_basic_register() {
-    template_register \
-        "rust_basic" \
-        "$(_t "rust_basic_name")" \
-        "rust" \
-        "$(_t "rust_category_description")" \
-        "$(_t "rust_basic_description")" \
-        "template_rust_basic_generate"
+# 获取 Rust 基础模板信息
+_template_rust_basic_get_info() {
+    echo "basic|$(_t "rust_basic_name")"
 }
 
 # 初始化 Rust 模板翻译
@@ -281,6 +278,5 @@ mod tests {
 EOF
 }
 
-# 初始化翻译和注册
+# 初始化翻译
 _template_rust_basic_init_i18n
-_template_rust_basic_register
