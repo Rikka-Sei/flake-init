@@ -21,6 +21,23 @@ require "template.manifest"
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 
+# 初始化 main 翻译
+_main_init_i18n() {
+    I18N_EN+=(
+        ["main_welcome_message"]="Welcome to the NixOS Flake Initializer!\n\nThis script will help you create a flake.nix file for your programming project."
+        ["main_get_project_name"]="Enter your project name:"
+        ["main_project_name_title"]="Project Setup"
+        ["main_invalid_project_name"]="Project name cannot be empty!"
+    )
+    
+    I18N_ZH+=(
+        ["main_welcome_message"]="欢迎使用 NixOS Flake 初始化工具！\n\n本脚本将帮助您为编程项目创建 flake.nix 配置文件。"
+        ["main_get_project_name"]="请输入您的项目名："
+        ["main_project_name_title"]="项目设置"
+        ["main_invalid_project_name"]="项目名不能为空！"
+    )
+}
+
 # 初始化全局变量
 project_name=""
 selected_language=""
@@ -28,18 +45,18 @@ selected_outputs=""
 
 # 欢迎消息
 main_welcome(){
-  ui_msgbox "$(_t "welcome_message")"
+  ui_msgbox "$(_t "main_welcome_message")"
 }
 
 
 # 获取项目名
 main_get_project_name(){
-  project_name=$(ui_inputbox "$(_t "project_name_title")" "$(_t "get_project_name")" "my-project")
+  project_name=$(ui_inputbox "$(_t "main_project_name_title")" "$(_t "main_get_project_name")" "my-project")
   cancelThenExit
 
   # 项目名称合法性检查
   if [ -z "$project_name" ]; then
-    ui_msgbox "$(_t "invalid_project_name")"
+    ui_msgbox "$(_t "main_invalid_project_name")"
 
     # 重新设置项目名
     main_get_project_name
@@ -48,8 +65,9 @@ main_get_project_name(){
 
 # MAIN function
 main(){
+  _main_init_i18n
+  
   main_welcome
-
   main_get_project_name
 }
 main

@@ -9,20 +9,10 @@ LANG_ENV=${LANG:-"en"}
 LANG_ENV=${LANG%%.*}  # 移除.UTF-8等后缀
 
 # 英文翻译
-I18N_EN=(
-    ["welcome_message"]="Welcome to the NixOS Flake Initializer!\n\nThis script will help you create a flake.nix file for your programming project."
-    ["get_project_name"]="Enter your project name:"
-    ["project_name_title"]="Project Setup"
-    ["invalid_project_name"]="Project name cannot be empty!"
-)
+I18N_EN=()
 
 # 中文翻译
-I18N_ZH=(
-    ["welcome_message"]="欢迎使用 NixOS Flake 初始化工具！\n\n本脚本将帮助您为编程项目创建 flake.nix 配置文件。" 
-    ["get_project_name"]="请输入您的项目名："
-    ["project_name_title"]="项目设置"
-    ["invalid_project_name"]="项目名不能为空！"
-)
+I18N_ZH=()
 
 # 遵守 [language][_TERRITORY] 注册语言
 # language (ISO 639 语言代码)：https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes
