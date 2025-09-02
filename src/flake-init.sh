@@ -16,6 +16,7 @@ require "lib.i18n"
 require "lib.ui"
 require "lib.utils"
 require "template.manifest"
+require "template.template_base"
 
 # 强制UTF-8环境
 export LANG=en_US.UTF-8
@@ -28,6 +29,8 @@ _main_init_i18n() {
         ["main_get_project_name"]="Enter your project name:"
         ["main_project_name_title"]="Project Setup"
         ["main_invalid_project_name"]="Project name cannot be empty!"
+        ["main_select_template"]="Select Template Type"
+        ["main_template_generated"]="Template generated successfully in directory:"
     )
     
     I18N_ZH+=(
@@ -35,6 +38,8 @@ _main_init_i18n() {
         ["main_get_project_name"]="请输入您的项目名："
         ["main_project_name_title"]="项目设置"
         ["main_invalid_project_name"]="项目名不能为空！"
+        ["main_select_template"]="选择模板类型"
+        ["main_template_generated"]="模板已成功生成到目录："
     )
 }
 
@@ -63,11 +68,26 @@ main_get_project_name(){
   fi
 }
 
+# 模板选择和生成
+main_template_workflow() {
+    # 初始化模板系统
+    template_manifest_init
+    
+    # 使用模板系统选择和生成项目
+    if template_select_and_generate "$project_name" "."; then
+        ui_info "$(_t "main_template_generated") $project_name/"
+    else
+        ui_error "模板生成失败"
+        return 1
+    fi
+}
+
 # MAIN function
 main(){
   _main_init_i18n
   
   main_welcome
   main_get_project_name
+  main_template_workflow
 }
 main
