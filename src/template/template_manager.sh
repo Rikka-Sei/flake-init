@@ -78,8 +78,7 @@ template_main_workflow() {
     cancelThenExit
     
     # 3. 确保语言 manifest 已加载并调用处理函数
-    local module_path="template.languages.${selected_language}.manifest"
-    require "$module_path"
+    require "template.languages.${selected_language}.manifest"
     
     local handler_function="${selected_language}_handle_templates"
     

@@ -30,6 +30,7 @@ _template_rust_basic_init_i18n() {
         ["rust_generating_flake"]="Generating flake.nix..."
         ["rust_generating_toolchain"]="Creating rust-toolchain.toml..."
         ["rust_generating_envrc"]="Creating .envrc..."
+        ["rust_project_created"]="Rust project created successfully:"
     )
     
     I18N_ZH+=(
@@ -42,6 +43,7 @@ _template_rust_basic_init_i18n() {
         ["rust_binary_title"]="Rust 配置"
         ["rust_extra_packages"]="额外的 Nix 包（空格分隔）："
         ["rust_packages_title"]="额外包"
+        ["rust_project_created"]="Rust 项目创建完成:"
         ["rust_generating_cargo"]="正在生成 Cargo.toml..."
         ["rust_generating_main"]="正在创建 main.rs..."
         ["rust_generating_flake"]="正在生成 flake.nix..."
@@ -124,7 +126,7 @@ template_rust_basic_generate() {
         _generate_envrc "$project_path"
     }
     
-    debuger success "Rust" "Rust 项目创建完成: $project_path"
+    debuger success "Rust" "$(_t "rust_project_created") $project_path"
 }
 
 # 生成 Cargo.toml
