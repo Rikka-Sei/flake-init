@@ -65,120 +65,58 @@ src/template/languages/{language}/
 
 ### 2.1 创建语言 Manifest
 
-首先创建 `src/template/languages/{language}/manifest.sh`：
+基于新的通用模板系统，创建 `src/template/languages/{language}/manifest.sh`：
 
 ```bash
 #!/usr/bin/env bash
 
-# {Language} 语言模板管理
-# 负责 {Language} 相关模板的发现、注册和选择
+# {Language} 语言模板配置
+# 设置 {Language} 相关的配置变量供通用模板系统使用
 
-require ".i18n"
-require ".ui"
-require ".utils"
-require ".debugger"
+require "lib.i18n"
+require "template.language_manifest"
 
-# 初始化 {Language} manifest 翻译
+# 初始化 {Language} 特定翻译
 _${language}_manifest_init_i18n() {
     I18N_EN+=(
         ["${language}_language_description"]="Language description in English"
-        ["${language}_no_templates"]="No available {Language} templates"
         ["${language}_select_template_title"]="Select {Language} Template"
         ["${language}_select_template_prompt"]="Please select the template to use:"
     )
     
     I18N_ZH+=(
         ["${language}_language_description"]="语言的中文描述"
-        ["${language}_no_templates"]="没有可用的 {Language} 模板"
         ["${language}_select_template_title"]="选择 {Language} 模板"
         ["${language}_select_template_prompt"]="请选择要使用的模板："
     )
 }
+# 立即初始化
+_${language}_manifest_init_i18n
 
-# 原地初始化
-_${language}_manifest_init_i18n 
+# 设置语言配置变量
+LANG_NAME="{Language}"
+LANG_PREFIX="${language}"
+LANG_DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+LANG_SELECT_TITLE="$(_t "${language}_select_template_title")"
+LANG_SELECT_PROMPT="$(_t "${language}_select_template_prompt")"
 
 # {Language} 语言元信息
 ${language}_language_meta() {
     echo "${language}" "$(_t "${language}_language_description")"
 }
 
-# 发现 {Language} 模板
-${language}_discover_templates() {
-    local ${language}_dir="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
-    local -a templates=()
-    
-    # 扫描当前目录下的所有模板文件（除了 manifest.sh）
-    for template_file in "$${language}_dir"/*.sh; do
-        local filename=$(basename "$template_file")
-        
-        # 跳过 manifest.sh 自身
-        [[ "$filename" == "manifest.sh" ]] && continue
-        
-        # 获取模板ID（文件名去掉.sh）
-        local template_id="${filename%.sh}"
-        
-        # 加载模板文件
-        source "$template_file"
-        
-        # 获取模板信息
-        if type "_template_${language}_${template_id}_get_info" >/dev/null 2>&1; then
-            local info
-            info=$(_template_${language}_${template_id}_get_info)
-            local display_name="${info#*|}"
-            templates+=("$template_id" "$display_name")
-        else
-            templates+=("$template_id" "${Language}-${template_id}")
-        fi
-    done
-    
-    printf '%s\n' "${templates[@]}"
-}
-
-# {Language} 模板选择和生成主函数
+# {Language} 模板处理函数 - 使用通用模板系统
 ${language}_handle_templates() {
-    local project_name="$1"
-    local target_dir="$2"
-    
-    local template_output
-    template_output=$(${language}_discover_templates)
-    
-    local -a template_list
-    string_to_array template_list "$template_output"
-    
-    if [[ ${#template_list[@]} -eq 0 ]]; then
-        ui_error "$(_t "${language}_no_templates")"
-        return 1
-    elif [[ ${#template_list[@]} -eq 2 ]]; then
-        local template_id="${template_list[0]}"
-        ${language}_generate_template "$template_id" "$project_name" "$target_dir"
-    else
-        local selected_template
-        selected_template=$(ui_menu "$(_t "${language}_select_template_title")" "$(_t "${language}_select_template_prompt")" 80 20 10 "" "${template_list[@]}")
-        cancelThenExit
-        
-        ${language}_generate_template "$selected_template" "$project_name" "$target_dir"
-    fi
-}
-
-# 生成 {Language} 模板
-${language}_generate_template() {
-    local template_id="$1"
-    local project_name="$2"
-    local target_dir="$3"
-    
-    require "template.languages.${language}.${template_id}"
-    
-    local generator_function="template_${language}_${template_id}_generate"
-    
-    if type "$generator_function" >/dev/null 2>&1; then
-        "$generator_function" "$project_name" "$target_dir"
-    else
-        ui_error "Template generator function not found: $generator_function"
-        return 1
-    fi
+    language_handle_templates "$@"
 }
 ```
+
+**关键变化说明：**
+
+1. **依赖简化**: 只需要 `lib.i18n` 和 `template.language_manifest`
+2. **配置变量**: 通过设置 `LANG_*` 变量来配置通用模板系统
+3. **代码大幅简化**: 从 ~100 行缩减到 ~30 行
+4. **统一处理**: 所有复杂逻辑都交给通用模板系统处理
 
 ### 2.2 创建具体模板实现
 
@@ -190,10 +128,10 @@ ${language}_generate_template() {
 # {Language} {TemplateType} 项目模板
 # 创建 {描述模板功能}
 
-require ".i18n"
-require ".ui" 
-require ".utils"
-require ".debugger"
+require "lib.i18n"
+require "lib.ui" 
+require "lib.utils"
+require "lib.debugger"
 
 # 获取 {Language} {TemplateType} 模板信息
 _template_${language}_${template_type}_get_info() {
@@ -289,14 +227,29 @@ _template_${language}_${template_type}_init_i18n
 
 ## 3. 开发指导原则
 
-### 3.1 用户体验原则
+### 3.1 模板系统架构
+
+新的模板系统采用三层架构：
+
+1. **语言选择器** (`language_selector.sh`): 负责扫描和选择编程语言
+2. **通用模板系统** (`language_manifest.sh`): 提供标准化的模板发现、选择和生成流程
+3. **语言特定配置** (`languages/{lang}/manifest.sh`): 只需设置配置变量
+
+**通用模板系统提供的功能：**
+- 自动模板发现（避免子shell问题）
+- 统一的用户选择界面
+- 标准化的错误处理
+- 调试信息输出
+- 模块加载管理
+
+### 3.2 用户体验原则
 
 1. **渐进式配置收集**：按需收集配置信息，避免一次性询问太多问题
 2. **合理的默认值**：提供符合惯例的默认配置
 3. **清晰的进度反馈**：使用 `debuger` 函数提供操作进度信息
 4. **错误处理**：使用 `cancelThenExit` 处理用户取消操作
 
-### 3.2 代码组织原则
+### 3.3 代码组织原则
 
 1. **函数命名规范**：
    - 公共函数：`${language}_function_name`
@@ -307,12 +260,21 @@ _template_${language}_${template_type}_init_i18n
 
 3. **国际化支持**：所有用户可见的文本都必须支持中英文
 
-### 3.3 技术要求
+### 3.4 技术要求
 
-1. **依赖声明**：在文件开头使用 `require` 声明依赖
-2. **错误处理**：关键操作后使用适当的错误检查
-3. **路径处理**：使用绝对路径，避免相对路径问题
-4. **权限检查**：生成文件前检查目标目录权限
+1. **依赖声明**：
+   - **绝对导入**：`require "lib.i18n"` (用于引用 src/lib/ 下的库)
+   - **相对导入**：`require ".language_manifest"` (用于同目录文件)
+   - 避免混合使用
+
+2. **模块加载**：
+   - 优先使用 `require` 而不是直接 `source`
+   - 利用模块缓存避免重复加载
+   - 获得更好的错误处理和调试信息
+
+3. **错误处理**：关键操作后使用适当的错误检查
+4. **路径处理**：使用绝对路径，避免相对路径问题
+5. **权限检查**：生成文件前检查目标目录权限
 
 ## 4. 测试和验证
 
@@ -420,7 +382,42 @@ done
 }
 ```
 
-## 6. 扩展和维护
+## 6. 通用模板系统配置说明
+
+### 6.1 必需的配置变量
+
+每个语言的 `manifest.sh` 必须设置以下变量：
+
+```bash
+# 必需变量
+LANG_NAME="显示名称"           # 用于调试日志，如 "Rust"
+LANG_PREFIX="前缀"             # 用于函数名，如 "rust"
+LANG_DIR="目录路径"            # 模板文件所在目录
+
+# 可选变量（有默认值）
+LANG_SELECT_TITLE="选择标题"   # 模板选择对话框标题
+LANG_SELECT_PROMPT="选择提示" # 模板选择提示文本
+```
+
+### 6.2 模板发现机制
+
+通用系统会自动：
+
+1. **扫描模板文件**: 查找 `LANG_DIR` 下的所有 `.sh` 文件（除了 `manifest.sh`）
+2. **加载模板**: 使用 `require` 加载每个模板文件
+3. **获取信息**: 调用 `_template_${LANG_PREFIX}_${template_id}_get_info` 函数
+4. **构建列表**: 生成模板选择列表供用户选择
+
+### 6.3 错误处理增强
+
+通用系统提供的错误处理：
+
+- **模块加载失败**: 显示具体的调用者信息
+- **配置验证**: 检查必需变量是否设置
+- **模板验证**: 确认生成器函数存在
+- **用户取消**: 统一处理用户取消操作
+
+## 7. 扩展和维护
 
 ### 6.1 添加新的模板类型
 
