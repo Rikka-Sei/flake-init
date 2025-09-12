@@ -58,8 +58,8 @@ _language_discover_templates() {
         # 获取模板ID（文件名去掉.sh）
         local template_id="${filename%.sh}"
         
-        # 加载模板文件
-        source "$template_file"
+        # 使用 require 加载模板文件
+        require "template.languages.${lang_prefix}.${template_id}"
         
         # 获取模板信息（假设有标准函数）
         if type "_template_${lang_prefix}_${template_id}_get_info" >/dev/null 2>&1; then
