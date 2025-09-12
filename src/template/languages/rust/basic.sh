@@ -3,10 +3,10 @@
 # Rust 基础项目模板
 # 创建带有 Cargo 的标准 Rust 项目
 
-require ".i18n"
-require ".ui" 
-require ".utils"
-require ".debugger"
+require "lib.i18n"
+require "lib.ui" 
+require "lib.utils"
+require "lib.debugger"
 
 # 获取 Rust 基础模板信息
 _template_rust_basic_get_info() {

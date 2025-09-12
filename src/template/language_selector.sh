@@ -2,10 +2,11 @@
 
 # 模板管理器 - 负责语言发现和模板选择流程
 
-require ".i18n"
-require ".ui"
-require ".utils"
-require ".debugger"
+require "lib.i18n"
+require "lib.ui"
+require "lib.utils"
+require "lib.debugger"
+require ".language_manifest"
 
 # 初始化语言选择器翻译
 _language_selector_init_i18n() {
