@@ -4,8 +4,8 @@
 # 按业界标准重新排序等级：debug < info < warn < error
 # 同时保留原有的 log, success, line 等级
 
-# 默认调试等级
-debug="info"
+# 默认调试等级，支持环境变量覆盖
+debug="${DEBUG_LEVEL:-info}"
 
 # 将等级名称转换为数字（按业界标准重新排序）
 convert_level() {

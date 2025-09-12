@@ -96,8 +96,8 @@ language_handle_templates() {
     local -a template_list
     _language_discover_templates template_list
     
-    debuger info "${LANG_NAME}Manifest" "$(_t "manifest_template_list_length") ${#template_list[@]}"
-    debuger info "${LANG_NAME}Manifest" "$(_t "manifest_template_list_content") ${template_list[*]}"
+    debuger log "${LANG_NAME}Manifest" "$(_t "manifest_template_list_length") ${#template_list[@]}"
+    debuger log "${LANG_NAME}Manifest" "$(_t "manifest_template_list_content") ${template_list[*]}"
     
     if [[ ${#template_list[@]} -eq 0 ]]; then
         ui_error "$(_t "manifest_no_templates")"
@@ -105,11 +105,11 @@ language_handle_templates() {
     elif [[ ${#template_list[@]} -eq 2 ]]; then
         # 只有一个模板，直接使用
         local template_id="${template_list[0]}"
-        debuger info "${LANG_NAME}Manifest" "$(_t "manifest_using_single_template") $template_id"
+        debuger log "${LANG_NAME}Manifest" "$(_t "manifest_using_single_template") $template_id"
         _language_generate_template "$template_id" "$project_name" "$target_dir"
     else
         # 多个模板，让用户选择
-        debuger info "${LANG_NAME}Manifest" "$(_t "manifest_showing_template_menu")"
+        debuger log "${LANG_NAME}Manifest" "$(_t "manifest_showing_template_menu")"
         local selected_template
         
         # 使用语言特定的选择标题，如果未设置则使用通用标题
@@ -135,7 +135,7 @@ _language_generate_template() {
     # 调用具体的模板生成函数
     local generator_function="template_${LANG_PREFIX}_${template_id}_generate"
     
-    debuger info "${LANG_NAME}Generate" "$(_t "manifest_calling_generator") $generator_function"
+    debuger log "${LANG_NAME}Generate" "$(_t "manifest_calling_generator") $generator_function"
     
     if type "$generator_function" >/dev/null 2>&1; then
         "$generator_function" "$project_name" "$target_dir"
