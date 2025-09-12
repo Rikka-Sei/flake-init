@@ -7,8 +7,8 @@ require ".ui"
 require ".utils"
 require ".debugger"
 
-# 初始化模板管理器翻译
-_template_manager_init_i18n() {
+# 初始化语言选择器翻译
+_language_selector_init_i18n() {
     I18N_EN+=(
         ["template_no_languages"]="No programming languages found"
         ["template_select_language"]="Select Programming Language"
@@ -61,7 +61,7 @@ template_main_workflow() {
     local target_dir="${2:-.}"
     
     # 初始化翻译
-    _template_manager_init_i18n
+    _language_selector_init_i18n
     
     # 1. 获取可用语言
     local -a language_list

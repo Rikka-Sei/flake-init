@@ -15,7 +15,7 @@ require "lib.debugger"
 require "lib.i18n"
 require "lib.ui"
 require "lib.utils"
-require "template.template_manager"
+require "template.language_selector"
 
 # 强制UTF-8环境
 export LANG=en_US.UTF-8
